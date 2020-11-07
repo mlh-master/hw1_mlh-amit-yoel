@@ -18,6 +18,10 @@ def rm_ext_and_nan(CTG_features, extra_feature):
     """
     # ------------------ IMPLEMENT YOUR CODE HERE:------------------------------
 
+    CTG_nan = CTG_features.loc[:, :].replace('--', np.nan)
+    
+    c_ctg = {y:[x for x in CTG_nan[y] if not pd.isna(x)] for y in CTG_nan.columns if y != extra_feature}
+
     # --------------------------------------------------------------------------
     return c_ctg
 
