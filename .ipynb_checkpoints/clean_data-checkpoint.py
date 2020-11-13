@@ -18,12 +18,8 @@ def rm_ext_and_nan(CTG_features, extra_feature):
     """
     # ------------------ IMPLEMENT YOUR CODE HERE:------------------------------
 
-    ctg = CTG_features.copy()
-    for feat in ctg.columns:
-        for index in ctg.index:
-            if not isinstance(ctg[feat][index], (float, int)):
-                ctg = ctg.replace(ctg[feat][index], np.nan)
-    c_ctg = {y: [x for x in ctg[y] if not pd.isna(x)] for y in ctg.columns if y != extra_feature}
+    CTG_nan = CTG_features.replace('--', 2000)
+    c_ctg = {y:[x for x in CTG_features[y] if not pd.isna(x)] for y in CTG_features.columns if y != extra_feature}
 
     # --------------------------------------------------------------------------
     return c_ctg
@@ -39,18 +35,11 @@ def nan2num_samp(CTG_features, extra_feature):
     c_cdf = {}
     # ------------------ IMPLEMENT YOUR CODE HERE:------------------------------
 
-    ctg = CTG_features.copy()
-    c_cdf = rm_ext_and_nan(ctg, extra_feature)
-    for feat in ctg.columns:
-        for index in ctg.index:
-            if not isinstance(ctg[feat][index], (float, int)):
-                ctg = ctg.replace(ctg[feat][index], np.nan)
-    for feat in ctg.columns:
-        if feat != extra_feature:
-            for index in ctg.index:
-                if pd.isna(ctg[feat][index]):
-                    ctg.loc[feat, index] = np.random.choice(c_cdf[feat])
-    c_cdf = rm_ext_and_nan(ctg, extra_feature)
+    length = len(CTG_features.iloc[:, extra_feature])
+    c_cdf = rm_ext_and_nan(CTG_features, extra_feature)
+    for feature in c_cdf:
+        n = length - len(c_cdf[feature])
+        c_cdf[feature].append.np.random.choice(c_cdf[feature], size=n)
 
     # -------------------------------------------------------------------------
     return pd.DataFrame(c_cdf)
