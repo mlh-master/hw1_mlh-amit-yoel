@@ -49,7 +49,7 @@ def nan2num_samp(CTG_features, extra_feature):
         if feat != extra_feature:
             for index in ctg.index:
                 if pd.isna(ctg[feat][index]):
-                    ctg.loc[feat, index] = np.random.choice(c_cdf[feat])
+                    ctg[feat][index] = np.random.choice(c_cdf[feat])
     c_cdf = rm_ext_and_nan(ctg, extra_feature)
 
     # -------------------------------------------------------------------------
@@ -64,7 +64,14 @@ def sum_stat(c_feat):
     """
     # ------------------ IMPLEMENT YOUR CODE HERE:------------------------------
 
-    # -------------------------------------------------------------------------
+    d_summary = {}
+    summery = c_feat.describe()
+    for feat in summery.columns:
+        d_summary[feat] = {}
+        for statistic, key in [('min', 'min'), ('25%', 'Q1'), ('50%', 'median'), ('75%', 'Q3'), ('max', 'max')]:
+            d_summary[feat][key] = summery[feat][statistic]
+
+    # -----------------------------------------------   --------------------------
     return d_summary
 
 
@@ -77,6 +84,15 @@ def rm_outlier(c_feat, d_summary):
     """
     c_no_outlier = {}
     # ------------------ IMPLEMENT YOUR CODE HERE:------------------------------
+
+    c_no_outlier = c_feat.copy()
+    for feat in c_no_outlier.columns:
+        q1 = d_summary[feat]['Q1']
+        q3 = d_summary[feat]['Q3']
+        iqr = q3 - q1
+        for index in c_no_outlier.index:
+            if c_no_outlier[feat][index] < q1 - 1.5 * iqr or c_no_outlier[feat][index] > q3 + 1.5 * iqr:
+                c_no_outlier[feat][index] = np.nan
 
     # -------------------------------------------------------------------------
     return pd.DataFrame(c_no_outlier)
