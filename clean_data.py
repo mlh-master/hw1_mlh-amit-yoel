@@ -108,6 +108,11 @@ def phys_prior(c_cdf, feature, thresh):
     """
     # ------------------ IMPLEMENT YOUR CODE HERE:-----------------------------
 
+    filt_feature = np.array([])
+    for index in c_cdf.index:
+        if c_cdf[feature][index] < thresh:
+            filt_feature = np.append(filt_feature, c_cdf[feature][index])
+
     # -------------------------------------------------------------------------
     return filt_feature
 
