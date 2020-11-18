@@ -129,5 +129,42 @@ def norm_standard(CTG_features, selected_feat=('LB', 'ASTV'), mode='none', flag=
     x, y = selected_feat
     # ------------------ IMPLEMENT YOUR CODE HERE:------------------------------
 
+    nsd_res = CTG_features.copy()
+    if mode == 'mean':
+        for feat in nsd_res.columns:
+            nsd_res[feat] = (nsd_res[feat] - np.mean(nsd_res[feat])) / (np.max(nsd_res[feat]) - np.min(nsd_res[feat]))
+
+    if mode == 'MinMax':
+        for feat in nsd_res.columns:
+            nsd_res[feat] = (nsd_res[feat] - np.min(nsd_res[feat])) / (np.max(nsd_res[feat]) - np.min(nsd_res[feat]))
+
+    if mode == 'standard':
+        for feat in nsd_res.columns:
+           nsd_res[feat] = (nsd_res[feat] - np.mean(nsd_res[feat])) / np.std(nsd_res[feat])
+
+    if flag:
+
+        fig, axs = plt.subplots(1, 2, sharey=True, tight_layout=True)
+        axs[0].hist(nsd_res[x], bins=30)
+        axs[0].set_title(mode)
+        axs[0].set_xlabel(x)
+        axs[0].set_ylabel('Count')
+        axs[1].hist(CTG_features[x], bins=30)
+        axs[1].set_title('Before')
+        axs[1].set_xlabel(x)
+        axs[1].set_ylabel('Count')
+        plt.show()
+
+        fig, axs = plt.subplots(1, 2, sharey=True, tight_layout=True)
+        axs[0].hist(nsd_res[y], bins=30)
+        axs[0].set_title(mode)
+        axs[0].set_xlabel(y)
+        axs[0].set_ylabel('Count')
+        axs[1].hist(CTG_features[y], bins=30)
+        axs[1].set_title('Before')
+        axs[1].set_xlabel(y)
+        axs[1].set_ylabel('Count')
+        plt.show()
+
     # -------------------------------------------------------------------------
     return pd.DataFrame(nsd_res)
