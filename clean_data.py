@@ -41,16 +41,16 @@ def nan2num_samp(CTG_features, extra_feature):
 
     ctg = CTG_features.copy()
     c_cdf = rm_ext_and_nan(ctg, extra_feature)
+    ctg.drop(columns = extra_feature, inplace = True)
     for feat in ctg.columns:
         for index in ctg.index:
             if not isinstance(ctg[feat][index], (float, int)):
                 ctg = ctg.replace(ctg[feat][index], np.nan)
     for feat in ctg.columns:
-        if feat != extra_feature:
-            for index in ctg.index:
-                if pd.isna(ctg[feat][index]):
-                    ctg[feat][index] = np.random.choice(c_cdf[feat])
-    c_cdf = rm_ext_and_nan(ctg, extra_feature)
+        for index in ctg.index:
+            if pd.isna(ctg[feat][index]):
+                ctg[feat][index] = np.random.choice(c_cdf[feat])
+    c_cdf = ctg.copy()
 
     # -------------------------------------------------------------------------
     return pd.DataFrame(c_cdf)
@@ -134,13 +134,13 @@ def norm_standard(CTG_features, selected_feat=('LB', 'ASTV'), mode='none', flag=
         for feat in nsd_res.columns:
             nsd_res[feat] = (nsd_res[feat] - np.mean(nsd_res[feat])) / (np.max(nsd_res[feat]) - np.min(nsd_res[feat]))
 
-    if mode == 'MinMax':
+    elif mode == 'MinMax':
         for feat in nsd_res.columns:
             nsd_res[feat] = (nsd_res[feat] - np.min(nsd_res[feat])) / (np.max(nsd_res[feat]) - np.min(nsd_res[feat]))
 
-    if mode == 'standard':
+    elif mode == 'standard' :
         for feat in nsd_res.columns:
-           nsd_res[feat] = (nsd_res[feat] - np.mean(nsd_res[feat])) / np.std(nsd_res[feat])
+            nsd_res[feat] = (nsd_res[feat] - np.mean(nsd_res[feat])) / np.std(nsd_res[feat])
 
     if flag:
 
