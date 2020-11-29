@@ -20,6 +20,10 @@ def pred_log(logreg, X_train, y_train, X_test, flag=False):
     """
     # ------------------ IMPLEMENT YOUR CODE HERE:-----------------------------
 
+    logreg.fit(X_train, y_train)
+    y_pred_log = logreg.predict(X_test)
+    w_log = logreg.coef_
+    
     # -------------------------------------------------------------------------
     return y_pred_log, w_log
 
@@ -99,6 +103,13 @@ def odds_ratio(w, X, selected_feat='LB'):
     """
     # ------------------ IMPLEMENT YOUR CODE HERE:-----------------------------
 
+    featInd = X_train.columns.get_loc('selected_feat')
+    w1 = w + 1
+    odds0 = np.exp(np.transpose(w[0]) * X)
+    odds1 = np.exp(np.transpose(w[0]) * X)
+    odd_ratio = odds1 / odds0
+    odds = np.median(odds0)
+    
     # --------------------------------------------------------------------------
 
     return odds, odd_ratio
